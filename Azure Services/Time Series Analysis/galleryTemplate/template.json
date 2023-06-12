@@ -1,0 +1,506 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "parameters": [
+          {
+            "id": "c45ca29c-9e2d-4f6f-b109-0e822e1dcc48",
+            "isRequired": true,
+            "name": "TimeRange",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "type": 4,
+            "typeSettings": {
+              "allowCustom": true,
+              "selectableValues": [
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ]
+            },
+            "value": {
+              "durationMs": 2592000000
+            },
+            "version": "KqlParameterItem/1.0"
+          },
+          {
+            "id": "560c2bfa-a56d-40ff-9136-d03468b5ec8b",
+            "isRequired": true,
+            "name": "Subscription",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "type": 6,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": true,
+              "showDefault": false
+            },
+            "version": "KqlParameterItem/1.0"
+          },
+          {
+            "id": "1d11f3d8-b7cb-4bf9-8ff1-0a16de61511b",
+            "version": "KqlParameterItem/1.0",
+            "name": "Workspace",
+            "type": 5,
+            "isRequired": true,
+            "query": "resources | where type == \"microsoft.operationalinsights/workspaces\" ",
+            "crossComponentResources": [
+              "{Subscription}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources"
+          }
+        ],
+        "style": "pills",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources"
+      },
+      "name": "parameters - 3"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{Workspace}"
+        ],
+        "parameters": [
+          {
+            "crossComponentResources": [
+              "{Workspace}"
+            ],
+            "id": "f3c4fdb4-85c9-4bc6-978f-e1c5f4f31872",
+            "isRequired": true,
+            "name": "ResourceType",
+            "query": "AzureMetrics\r\n| parse tolower(ResourceId) with \"/subscriptions/\" subscriptionId \"/resourcegroups/\" \r\n    resourceGroup \"/providers/\" provider \"/\" resourceType \"/\" resourceName \r\n| project resourceType=strcat(provider,\"/\",resourceType)\r\n| summarize by resourceType",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "type": 7,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "value": "microsoft.network/expressroutecircuits",
+            "version": "KqlParameterItem/1.0"
+          },
+          {
+            "crossComponentResources": [
+              "{Workspace}"
+            ],
+            "id": "a644919b-5c8c-4ee9-be76-af39d9ce4a0c",
+            "isRequired": true,
+            "name": "Resource",
+            "query": "AzureMetrics\r\n| where ResourceId contains \"{ResourceType}\" \r\n| summarize by tolower(ResourceId)",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "type": 5,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "version": "KqlParameterItem/1.0"
+          },
+          {
+            "crossComponentResources": [
+              "{Workspace}"
+            ],
+            "id": "0d7fec1b-28e1-4ecb-9b8c-b3d20844b4cc",
+            "name": "Metric",
+            "query": "AzureMetrics\r\n| where ResourceId =~ \"{Resource}\" \r\n|  summarize by MetricName\r\n| order by MetricName",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "type": 2,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "value": "BitsInPerSecond",
+            "version": "KqlParameterItem/1.0"
+          },
+          {
+            "id": "4d9154ac-a3de-4be3-b6af-0bc20a44a9e9",
+            "isHiddenWhenLocked": true,
+            "name": "AggregationFunction",
+            "type": 1,
+            "version": "KqlParameterItem/1.0"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 3 - Copy"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# **{Resource:name}** ({ResourceType}) - *{Metric}*"
+      },
+      "name": "text - 4"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# Aggregation"
+      },
+      "customWidth": "35",
+      "name": "text - 6"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "tabs",
+        "links": [
+          {
+            "id": "160bc8e1-360d-4ec0-b730-a258631bd292",
+            "cellValue": "AggregationFunction",
+            "linkTarget": "parameter",
+            "linkLabel": "Average",
+            "subTarget": "avg(avg)",
+            "style": "link"
+          },
+          {
+            "id": "b23aeda9-d502-4c62-92a8-bd72dceab2b4",
+            "cellValue": "AggregationFunction",
+            "linkTarget": "parameter",
+            "linkLabel": "Minimum",
+            "subTarget": "min(min)",
+            "style": "link"
+          },
+          {
+            "id": "cfde3d56-164f-47e7-9344-6455e26be300",
+            "cellValue": "AggregationFunction",
+            "linkTarget": "parameter",
+            "linkLabel": "Maximum",
+            "subTarget": "max(max)",
+            "style": "link"
+          },
+          {
+            "id": "42e0f350-37e2-4e11-8380-b77b77a6a7f1",
+            "cellValue": "AggregationFunction",
+            "linkTarget": "parameter",
+            "linkLabel": "Percentile 5",
+            "subTarget": "percentile(pct5,5)",
+            "style": "link"
+          },
+          {
+            "id": "cfa64306-729f-4869-b08d-21fce13ca0d1",
+            "cellValue": "AggregationFunction",
+            "linkTarget": "parameter",
+            "linkLabel": "Percentile 10",
+            "subTarget": "percentile(pct10,10)",
+            "style": "link"
+          },
+          {
+            "id": "af6b9b84-af97-435b-a723-3a097f3de025",
+            "cellValue": "AggregationFunction",
+            "linkTarget": "parameter",
+            "linkLabel": "Percentile 50",
+            "subTarget": "percentile(pct50,50)",
+            "style": "link"
+          },
+          {
+            "id": "8480291a-e382-4d9c-b495-75819f0f09cd",
+            "cellValue": "AggregationFunction",
+            "linkTarget": "parameter",
+            "linkLabel": "Percentile 90",
+            "subTarget": "percentile(pct90,90)",
+            "style": "link"
+          },
+          {
+            "id": "16068529-609f-4dbc-ab0b-dd55fd1ba74b",
+            "cellValue": "AggregationFunction",
+            "linkTarget": "parameter",
+            "linkLabel": "Percentile 95",
+            "subTarget": "percentile(pct95,95)",
+            "style": "link"
+          }
+        ]
+      },
+      "customWidth": "65",
+      "name": "links - 5"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "tabs",
+        "links": [
+          {
+            "id": "0a0c703a-be3a-4e68-a49d-70acea508f4e",
+            "cellValue": "selectedTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Forecast",
+            "subTarget": "Forecast",
+            "style": "link"
+          },
+          {
+            "id": "ee6b4d14-2b72-4a14-b56e-1b5e59f64ed8",
+            "cellValue": "selectedTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Trendline",
+            "subTarget": "Trendline",
+            "style": "link"
+          },
+          {
+            "id": "31d7efe0-e9d3-4e57-9cf8-118fc16bf0d3",
+            "cellValue": "selectedTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Anomalies",
+            "subTarget": "Anomalies",
+            "style": "link"
+          }
+        ]
+      },
+      "name": "links - 14"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "## 1 week forecast\r\n\r\nPredicts future values of a set of time series. Builds the decomposition model and then, for each time series, extrapolates the baseline component into the future."
+            },
+            "name": "text - 9"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "ea85abf1-9637-44fe-82dd-30a9dd64fac3",
+                  "jsonData": "[\"7\",\"14\",\"31\"]",
+                  "label": "Forcast Horizon Days",
+                  "name": "ForcastHorizon",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "type": 2,
+                  "typeSettings": {
+                    "additionalResourceOptions": []
+                  },
+                  "value": "7",
+                  "version": "KqlParameterItem/1.0"
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let min_t = todatetime(\"{TimeRange:startISO}\");\r\nlet max_t = now(-1d);\r\nlet dt = 1h;\r\nlet horizon={ForcastHorizon}d;\r\nAzureMetrics\r\n| where ResourceId =~ \"{Resource}\" \r\n| where MetricName =~ \"{Metric}\"\r\n| summarize \r\npct5 = percentile(Average, 5), \r\npct10 = percentile(Average, 10), \r\npct50 = percentile(Average, 50), \r\npct90 = percentile(Average, 90), \r\npct95 = percentile(Average, 95), \r\nmin = min(Minimum),\r\nmax = max(Maximum),\r\navg = avg(Average)  \r\nby ResourceId=tolower(ResourceId), ResourceProvider, MetricName, UnitName, bin(TimeGenerated, 1h)\r\n| project pct5,pct10, pct50, pct90, pct95, min, max, avg, ResourceId, ResourceProvider, MetricName, UnitName, TimeGenerated\r\n| make-series {Metric}={AggregationFunction} on TimeGenerated from min_t to max_t+horizon step dt\r\n| extend forecast = series_decompose_forecast({Metric}, toint(horizon/dt))\r\n| render timechart ",
+              "size": 0,
+              "noDataMessageStyle": 5,
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ]
+            },
+            "name": "1 week forecast"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "comparison": "isEqualTo",
+        "parameterName": "selectedTab",
+        "value": "Forecast"
+      },
+      "name": "group - Forecast"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "## TrendLine\r\n\r\nTakes a set of time series and automatically decomposes each time series to its trend components."
+            },
+            "name": "text - 10"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let grain = 1h;\r\nAzureMetrics\r\n| where ResourceId =~ \"{Resource}\" \r\n| where MetricName =~ \"{Metric}\"\r\n| summarize \r\npct5 = percentile(Average, 5), \r\npct10 = percentile(Average, 10), \r\npct50 = percentile(Average, 50), \r\npct90 = percentile(Average, 90), \r\npct95 = percentile(Average, 95), \r\nmin = min(Minimum),\r\nmax = max(Maximum),\r\navg = avg(Average)  \r\nby ResourceId=tolower(ResourceId), ResourceProvider, MetricName, UnitName, bin(TimeGenerated, 1h)\r\n| project pct5,pct10, pct50, pct90, pct95, min, max, avg, ResourceId, ResourceProvider, MetricName, UnitName, TimeGenerated\r\n| make-series {Metric} = {AggregationFunction} default = 0 on TimeGenerated from {TimeRange:start} to now(-1d) step grain\r\n| extend  (RSquare,Slope,Variance,RVariance,Interception,LineFit)= series_fit_line({Metric})\r\n| project TimeGenerated, {Metric}, LineFit",
+              "size": 0,
+              "noDataMessageStyle": 5,
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "visualization": "linechart",
+              "graphSettings": {
+                "type": 0
+              }
+            },
+            "name": "TrendLine"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "comparison": "isEqualTo",
+        "parameterName": "selectedTab",
+        "value": "Trendline"
+      },
+      "name": "group - Trendline"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "## Anomalies\r\n\r\nCalculates anomaly scores for each point of the residual component using Tukey's fence test. \r\n\r\n**Multiplied by average**\r\n\r\nAnomaly scores above 1.5 or below -1.5 indicate a mild anomaly rise or decline respectively. \r\n\r\nAnomaly scores above 3.0 or below -3.0 indicate a strong anomaly."
+            },
+            "name": "text - 8"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let grain = 1h;\r\nlet metric_scale = toscalar(\r\nAzureMetrics\r\n| where ResourceId =~ \"{Resource}\" \r\n| where MetricName =~ \"{Metric}\"\r\n| summarize \r\npct5 = percentile(Average, 5), \r\npct10 = percentile(Average, 10), \r\npct50 = percentile(Average, 50), \r\npct90 = percentile(Average, 90), \r\npct95 = percentile(Average, 95), \r\nmin = min(Minimum),\r\nmax = max(Maximum),\r\navg = avg(Average)  \r\n| summarize {AggregationFunction});\r\nAzureMetrics\r\n| where ResourceId =~ \"{Resource}\" \r\n| where MetricName =~ \"{Metric}\"\r\n| summarize \r\npct5 = percentile(Average, 5), \r\npct10 = percentile(Average, 10), \r\npct50 = percentile(Average, 50), \r\npct90 = percentile(Average, 90), \r\npct95 = percentile(Average, 95), \r\nmin = min(Minimum),\r\nmax = max(Maximum),\r\navg = avg(Average)  \r\nby ResourceId=tolower(ResourceId), ResourceProvider, MetricName, UnitName, bin(TimeGenerated, 1h)\r\n| project pct5,pct10, pct50, pct90, pct95, min, max, avg, ResourceId, ResourceProvider, MetricName, UnitName, TimeGenerated\r\n| make-series {Metric} = {AggregationFunction} default = 0 on TimeGenerated from {TimeRange:start} to now(-1d) step grain\r\n| extend (anomalies) = series_decompose_anomalies({Metric}, 1.5, -1, 'linefit')\r\n| extend anomalies = \r\nseries_multiply(metric_scale, anomalies) // multiplied for visualization purposes\r\n| render timechart ",
+              "size": 0,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "visualization": "timechart",
+              "chartSettings": {
+                "xAxis": "TimeGenerated"
+              }
+            },
+            "name": "Anomalies"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "## Anomalies - Outliers"
+            },
+            "name": "text - 8 - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let grain = 1h;\r\nAzureMetrics\r\n| where ResourceId =~ \"{Resource}\" \r\n| where MetricName =~ \"{Metric}\"\r\n| summarize \r\npct5 = percentile(Average, 5), \r\npct10 = percentile(Average, 10), \r\npct50 = percentile(Average, 50), \r\npct90 = percentile(Average, 90), \r\npct95 = percentile(Average, 95), \r\nmin = min(Minimum),\r\nmax = max(Maximum),\r\navg = avg(Average)  \r\nby ResourceId=tolower(ResourceId), ResourceProvider, MetricName, UnitName, bin(TimeGenerated, 1h)\r\n| project pct5,pct10, pct50, pct90, pct95, min, max, avg, ResourceId, ResourceProvider, MetricName, UnitName, TimeGenerated\r\n| make-series MetricSeries = {AggregationFunction} default = 0 on TimeGenerated from {TimeRange:start} to now(-1d) step grain\r\n| extend outliers=series_decompose_anomalies(MetricSeries, 1.5, -1, 'linefit')\r\n| mv-expand TimeGenerated, MetricSeries, outliers\r\n| where outliers == 1\r\n| project todatetime(TimeGenerated), MetricValue=round(todouble(MetricSeries),4)\r\n| extend TimeGenerated=strcat(format_datetime(TimeGenerated, \"yyyy-MM-dd HH\"), \":00:00\")\r\n| order by TimeGenerated desc",
+              "size": 0,
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "MetricValue",
+                    "formatOptions": {
+                      "palette": "redBright"
+                    },
+                    "formatter": 8
+                  },
+                  {
+                    "columnMatch": "IncomingRequests",
+                    "formatOptions": {
+                      "palette": "blue"
+                    },
+                    "formatter": 9
+                  },
+                  {
+                    "columnMatch": "AvgPerf",
+                    "formatOptions": {
+                      "palette": "redBright"
+                    },
+                    "formatter": 8
+                  }
+                ]
+              },
+              "chartSettings": {
+                "xAxis": "TimeGenerated"
+              }
+            },
+            "name": "Anomalies - Outliers"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "comparison": "isEqualTo",
+        "parameterName": "selectedTab",
+        "value": "Anomalies"
+      },
+      "name": "group - Anomalies"
+    }
+  ],
+  "fallbackResourceIds": [
+    "Azure Monitor"
+  ]
+}
